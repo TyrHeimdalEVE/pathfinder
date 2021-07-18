@@ -2803,10 +2803,11 @@ define([
              */
             let getOption = (type, connectionData, systemData) => {
                 let text = 'UNKNOWN';
+
                 if(type === 'source'){
-                    text = connectionData.sourceAlias + ' - ' + systemData.security;
+                    text = connectionData.sourceAlias + ' - ' + MapUtil.getSystemSecurityForDisplay(systemData.security).toLowerCase() + systemData.tag;
                 }else if(type === 'target'){
-                    text = connectionData.targetAlias + ' - ' + systemData.security;
+                    text = connectionData.targetAlias + ' - ' + MapUtil.getSystemSecurityForDisplay(systemData.security).toLowerCase() + systemData.tag;
                 }
 
                 return {
@@ -2983,7 +2984,7 @@ define([
 
                     for(let wormholeName of statics){
                         let wormholeData = Object.assign({}, Init.wormholes[wormholeName]);
-                        let staticWHName = wormholeData.name + ' - ' + wormholeData.security;
+                        let staticWHName = wormholeData.name + ' - ' + wormholeData.security
 
                         // filter staticWHName from existing options -> prevent duplicates in <optgroup>
                         SystemSignatureModule.filterGroupedOptions(newSelectOptions, filterOptionCallback(staticWHName));
@@ -3181,7 +3182,7 @@ define([
 
     SystemSignatureModule.defaultConfig = {
         className: 'pf-system-signature-module',                                // class for module
-        sortTargetAreas: ['a'],                                                 // sortable areas where module can be dragged into
+        sortTargetAreas: ['a', 'b', 'c'],                                       // sortable areas where module can be dragged into
         headline: 'Signatures',
 
         // headline toolbar

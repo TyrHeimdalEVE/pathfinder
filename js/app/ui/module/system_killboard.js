@@ -47,7 +47,14 @@ define([
             iconKbEl.setAttribute('title', 'zkillboard.com');
             iconKbEl.onclick = e => this.openKillboardUrl(e);
 
-            toolbarEl.append(iconKbEl, this._iconFilterEl);
+            let iconRegKbEl = this.newIconElement([
+                'fa-map-marked-alt', 'fa-fw',
+                this._config.moduleHeadlineIconClass
+            ]);
+            iconRegKbEl.setAttribute('title', 'zkillboard.com region');
+            iconRegKbEl.onclick = e => this.openKillboardUrlRegion(e);
+
+            toolbarEl.append(iconRegKbEl, iconKbEl, this._iconFilterEl);
             headEl.append(wsStatusEl, toolbarEl);
 
             return headEl;
@@ -554,7 +561,16 @@ define([
          */
         openKillboardUrl(e){
             e.stopPropagation();
-            window.open(`//zkillboard.com/system/${this._systemData.systemId}`, '_blank');
+            window.open(`//zkillboard.com/system/${this._systemData.systemId}/`, '_blank');
+        }
+
+        /**
+         * open external zKillboard URL for region
+         * @param e
+         */
+        openKillboardUrlRegion(e){
+            e.stopPropagation();
+            window.open(`//zkillboard.com/region/${this._systemData.region.id}/`, '_blank');
         }
 
         /**
@@ -578,6 +594,26 @@ define([
         onWsMessage(zkbData, killmailData){
             // check if killmail belongs to current filtered "streams"
             if(this.filterKillmailByStreams(killmailData)){
+                
+                if(!this._killboardEl){
+                    // Remove label which indicates that there are no kills
+                    let noKillsEl = this._bodyEl.querySelector('.label-success');
+                    if(noKillsEl){
+                        this._bodyEl.removeChild(noKillsEl);
+                    }
+                    
+                    // Initialize necessary container nodes
+                    this._killboardEl = document.createElement('ul');
+                    this._killboardEl.classList.add(this._config.systemKillboardListClass);
+                    
+                    this._bodyEl.append(
+                        this._killboardLabelEl,
+                        this._killboardEl
+                    );
+                }
+                
+            
+            
                 // check max limit for WS kill entries
                 this._countKillsWS = (this._countKillsWS || 0) + 1;
                 if(this._countKillsWS > this._config.maxCountKillsWS){
@@ -727,7 +763,7 @@ define([
          */
         static initWebSocket(){
             if(!SystemKillboardModule.ws){
-                SystemKillboardModule.ws = new WebSocket('wss://zkillboard.com:2096');
+                SystemKillboardModule.ws = new WebSocket('wss://zkillboard.com/websocket/');
                 SystemKillboardModule.wsStatus = 1;
             }
 

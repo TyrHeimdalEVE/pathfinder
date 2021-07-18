@@ -138,8 +138,9 @@ define([
             let parts = data.text.split(' - ');
             if(parts.length === 2){
                 // wormhole data -> 2 columns
-                let securityClass = Util.getSecurityClassForSystem(getSystemSecurityFromLabel(parts[1]));
-
+                
+                let securityClass = Util.getSecurityClassForSystem(MapUtil.getSystemSecurityForClass(parts[1]));
+                
                 switch(formatType){
                     case 'wormhole':
                         // some labels have a "suffix" label that should not have the securityClass
@@ -173,7 +174,7 @@ define([
      * @returns {*|jQuery|HTMLElement}
      */
     let formatSignatureConnectionSelectionData = state => {
-        let parts = state.text.split(' - ');
+        let parts = state.text.split(' - ');    
 
         let markup = '';
         if(parts.length === 2){
@@ -199,7 +200,7 @@ define([
                 }
             }
 
-            let securityClass = Util.getSecurityClassForSystem(parts[1]);
+            let securityClass = Util.getSecurityClassForSystem(MapUtil.getSystemSecurityForClass(parts[1]));
             markup += `<span class="${styleClass.join(' ')}">${parts[0]}</span>`;
             markup += `<span class="${securityClass}">&nbsp;&nbsp;${parts[1]}</span>`;
         }else{
@@ -370,19 +371,14 @@ define([
         $.when(
             selectElement.select2({
                 ajax: {
-                    url: function(params){
-                        // add params to URL
-                        return   Init.path.searchUniverseSystemData + '/' + params.term.trim();
-                    },
+                    url: params => `${Init.path.api}/SystemSearch/${params.term.trim()}`,
                     dataType: 'json',
                     delay: 250,
                     timeout: 5000,
                     cache: true,
-                    data: function(params){
-                        return {
-                            page: params.page || 1
-                        };
-                    },
+                    data: params => ({
+                       page: params.page || 1
+                    }),
                     processResults: function(data, params){
                         // parse the results into the format expected by Select2.
                         return {
@@ -392,7 +388,7 @@ define([
                                 let disabled = false;
                                 let trueSec = parseFloat(item.trueSec);
                                 let secClass = Util.getSecurityClassForSystem(item.security);
-                                let trueSecClass = Util.getTrueSecClassForSystem( trueSec );
+                                let trueSecClass = Util.getTrueSecClassForSystem(trueSec);
                                 let effectClass = MapUtil.getEffectInfoForSystem(item.effect, 'class');
 
                                 // check if system is dialed

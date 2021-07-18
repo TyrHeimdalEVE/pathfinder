@@ -33,6 +33,7 @@ define([
         systemHeadClass: 'pf-system-head',                              // class for system head
         systemHeadNameClass: 'pf-system-head-name',                     // class for system name
         systemHeadCounterClass: 'pf-system-head-counter',               // class for system user counter
+        systemHeadTagClass: 'pf-system-head-tag',                       // class for system tag
         systemHeadExpandClass: 'pf-system-head-expand',                 // class for system head expand arrow
         systemHeadInfoClass: 'pf-system-head-info',                     // class for system info
         systemBodyClass: 'pf-system-body',                              // class for system body
@@ -60,27 +61,34 @@ define([
 
     // map menu options
     let mapOptions = {
+        mapSnapToGrid : {
+            buttonId: Util.config.menuButtonGridId,
+            description: 'Grid snapping',
+            class: 'mapGridClass'
+        },
         mapMagnetizer: {
             buttonId: Util.config.menuButtonMagnetizerId,
             description: 'Magnetizer',
             onEnable: Magnetizer.initMagnetizer,
             onDisable: Magnetizer.destroyMagnetizer
         },
-        mapSnapToGrid : {
-            buttonId: Util.config.menuButtonGridId,
-            description: 'Grid snapping',
-            class: 'mapGridClass'
+        systemRegion : {
+            buttonId: Util.config.menuButtonRegionId,
+            description: 'Region names',
+            class: 'systemRegionClass',
+            onEnable: MapOverlay.toggleInfoSystemRegion,
+            onDisable: MapOverlay.toggleInfoSystemRegion,
         },
-        mapSignatureOverlays : {
+        systemCompact : {
+            buttonId: Util.config.menuButtonCompactId,
+            description: 'Compact system layout',
+            class: 'systemCompactClass'
+        },
+        connectionSignatureOverlays : {
             buttonId: Util.config.menuButtonEndpointId,
             description: 'Endpoint overlay',
             onEnable: MapOverlay.showInfoSignatureOverlays,
             onDisable: MapOverlay.hideInfoSignatureOverlays,
-        },
-        mapCompact : {
-            buttonId: Util.config.menuButtonCompactId,
-            description: 'Compact system layout',
-            class: 'mapCompactClass'
         }
     };
 
@@ -440,8 +448,11 @@ define([
                 }).append(
                     $('<span>', {
                         class: [config.systemSec, secClass].join(' '),
-                        text: data.security
+                        text: MapUtil.getSystemSecurityForDisplay(data.security).toLowerCase()
                     }),
+                    $('<span>', {
+                        class: [config.systemHeadTagClass, secClass].join(' ')
+                    }).attr('data-value', data.tag),
                     // System name is editable
                     $('<span>', {
                         class: systemHeadClasses.join(' '),
@@ -526,6 +537,11 @@ define([
                 alias = data.alias ? data.alias : data.name;
                 system.find('.' + config.systemHeadNameClass).editable('setValue', alias);
             }
+
+            let tag = system.getSystemInfo(['tag']);
+            if(tag !== data.tag){
+                system.find('.' + config.systemHeadTagClass).editable('setValue', data.tag);
+            }
         }
 
         // set system status
@@ -533,6 +549,7 @@ define([
         system.data('id', parseInt(data.id));
         system.data('systemId', parseInt(data.systemId));
         system.data('name', data.name);
+        system.data('tag', data.tag);
         system.data('typeId', parseInt(data.type.id));
         system.data('effect', data.effect);
         system.data('security', data.security);
@@ -930,7 +947,7 @@ define([
                     connection.setConnector(newConnector);
 
                     // we need to "reapply" the types after "Connector" was changed
-                    connection.reapplyTypes();
+                    // connection.reapplyTypes();
                 }
 
                 // add endpoint types ---------------------------------------------------------------------------------
@@ -1203,7 +1220,7 @@ define([
 
                 // show static overlay actions
                 let mapOverlay = MapOverlayUtil.getMapOverlay(mapContainer, 'info');
-                mapOverlay.updateOverlayIcon('systemRegion', 'show');
+                mapOverlay.updateOverlayIcon('systemPopover', 'show');
                 mapOverlay.updateOverlayIcon('connection', 'show');
                 mapOverlay.updateOverlayIcon('connectionEol', 'show');
 
@@ -1429,7 +1446,7 @@ define([
          */
         let showInfoSignatureOverlays = payload => new Promise(resolve => {
             Util.getLocalStore('map').getItem(payload.data.mapConfig.config.id).then(dataStore => {
-                if(dataStore && dataStore.mapSignatureOverlays){
+                if(dataStore && dataStore.connectionSignatureOverlays){
                     MapOverlay.showInfoSignatureOverlays($(payload.data.mapConfig.map.getContainer()));
                 }
                 resolve(payload);
@@ -1625,9 +1642,11 @@ define([
      */
     let makeEditable = system => {
         system = $(system);
-        let headElement = $(system).find('.' + config.systemHeadNameClass);
+        let nameElement = $(system).find('.' + config.systemHeadNameClass);
+        let tagElement = $(system).find('.' + config.systemHeadTagClass);
+        let headElements = $(nameElement).add($(tagElement));
 
-        headElement.editable({
+        nameElement.editable({
             mode: 'popup',
             type: 'text',
             name: 'alias',
@@ -1638,13 +1657,31 @@ define([
             toggle: 'manual',       // is triggered manually on dblClick
             showbuttons: false
         });
+        tagElement.editable({
+            mode: 'popup',
+            type: 'text',
+            name: 'tag',
+            emptytext: '',
+            title: 'System tag',
+            placement: 'top',
+            onblur: 'submit',
+            container: 'body',
+            toggle: 'manual',       // is triggered manually on dblClick
+            showbuttons: false,
+            display: function (value) {
+                if(String(value).length) {
+                    value += ' ';
+                }
+                $(this).text(value);
+            }
+        });
 
-        headElement.on('save', function(e, params){
+        headElements.on('save', function(e, params){
             // system alias changed -> mark system as updated
             MapUtil.markAsChanged(system);
         });
 
-        headElement.on('shown', function(e, editable){
+        headElements.on('shown', function(e, editable){
             // hide tooltip when xEditable is visible
             system.toggleSystemTooltip('hide', {});
 
@@ -1657,7 +1694,7 @@ define([
             }, 0, inputElement);
         });
 
-        headElement.on('hidden', function(e, editable){
+        headElements.on('hidden', function(e, editable){
             // show tooltip "again" on xEditable hidden
             system.toggleSystemTooltip('show', {show: true});
 
@@ -2034,15 +2071,26 @@ define([
 
         // system click events ========================================================================================
         let double = function(e){
+            e.stopPropagation(); // if not xEditable triggers page reload #945
             let system = $(this);
-            let headElement = $(system).find('.' + config.systemHeadNameClass);
+            let target = $(e.target);
+	
+            if(target.hasClass(config.systemHeadNameClass)) {
+                target = system.find('.' + config.systemHeadNameClass);
+            } else {
+                target = system.find('.' + config.systemHeadTagClass);
+            }
+
+            if(!target.hasClass('editable')) {
+                return;
+            }
 
             // update z-index for system, editable field should be on top
             // move them to the "top"
             $(system).updateSystemZIndex();
 
             // show "set alias" input (x-editable)
-            headElement.editable('show');
+            target.editable('show');
         };
 
         let single = function(e){
@@ -2149,6 +2197,10 @@ define([
                 Util.showNotify({title: 'System locked', text: systemName,  type: 'lock'});
             }
         }
+
+        // // update name class
+        // let nameClass = Util.getNameClassForSystem(system.data('locked'), system.data('effect'));
+        // system.find('.' + config.systemHeadNameClass).attr('class', [config.systemHeadNameClass, nameClass].join(' ') );
 
         // repaint connections
         revalidate(map, system);
@@ -2848,6 +2900,17 @@ define([
 
                     systemInfo.push(alias );
                     break;
+                case 'tag':
+                    // get current system tag
+                    let systemHeadTagElement = $(this).find('.' + config.systemHeadTagClass);
+                    let tag = '';
+                    if(systemHeadTagElement.hasClass('editable')){
+                        // xEditable is initiated
+                        tag = systemHeadTagElement.editable('getValue', true);
+                    }
+
+                    systemInfo.push(tag);
+                    break;
                 default:
                     systemInfo.push('bad system query');
             }
@@ -2888,7 +2951,7 @@ define([
                 }
 
                 // compact/small system layout or not
-                let compactView = mapElement.hasClass(MapUtil.config.mapCompactClass);
+                let compactView = mapElement.hasClass(MapUtil.config.systemCompactClass);
 
                 // get current character log data
                 let characterLogSystemId = Util.getObjVal(Util.getCurrentCharacterData('log'), 'system.id') || 0;
@@ -3078,6 +3141,7 @@ define([
                 systemId: parseInt(data.systemId),
                 name: data.name,
                 alias: system.getSystemInfo(['alias']),
+                tag: system.getSystemInfo(['tag']),
                 effect: data.effect,
                 type: {
                     id: data.typeId

@@ -19,7 +19,8 @@ define([
         zoomMin: 0.5,
 
         mapGridClass: 'pf-grid-small',                                  // class for map grid snapping
-        mapCompactClass: 'pf-compact',                                  // class for map compact system UI
+        systemRegionClass: 'pf-map-region',                             // class for systems regions on map
+        systemCompactClass: 'pf-map-compact',                           // class for compact systems on map
 
         systemIdPrefix: 'pf-system-',                                   // id prefix for a system
         systemClass: 'pf-system',                                       // class for all systems
@@ -252,6 +253,39 @@ define([
     let getEffectInfoForSystem = (effect, option) => {
         return Util.getObjVal(Init.classes.systemEffects, `${effect}.${option}`) || '';
     };
+
+
+    let getSystemSecurityForDisplay = (security) => {
+        const securityMapping = {
+            '0.0': 'ns',
+            'L': 'ls',
+            'H': 'hs',
+            'T': 'tr'
+        };
+        return securityMapping.hasOwnProperty(security) ? securityMapping[security] : security;
+    };
+
+    let getSystemSecurityForClass = (security) => {        
+        
+        if (security.toLowerCase().slice(0,2) === "tr" || security[0].toLowerCase() === 'a'){
+            var sec = security[0];
+        } else if (security.length > 2) {
+            var res = security.match(/[c|C][0-9]{1,2}/)
+            if (res === null || res.length == 0) {
+                var sec = security.slice(0,2);
+            } else {
+                sec = res[0].toUpperCase();
+            }
+        } else {
+            var sec = security;
+        }
+        const securityMapping = {
+            'ns': '0.0',
+            'ls': 'L',
+            'hs': 'H'
+        }
+        return securityMapping.hasOwnProperty(sec) ? securityMapping[sec] : sec.toUpperCase();
+    }
 
     /**
      * flag map component (map, system, connection) as "changed"
@@ -1293,8 +1327,10 @@ define([
 
         connection._jsPlumb.instance.setSuspendDrawing(true);
 
-        removeConnectionTypes(connection, types.diff(type));
-        addConnectionTypes(connection, type);
+        // ... redraw should be suspended (no repaint until function ends)
+        let doNotRepaint = connection._jsPlumb.instance.isSuspendDrawing();
+        removeConnectionTypes(connection, types.diff(type), [], doNotRepaint);
+        addConnectionTypes(connection, type, [], doNotRepaint);
 
         connection._jsPlumb.instance.setSuspendDrawing(false, true);
     };
@@ -1443,9 +1479,9 @@ define([
                 payload: mapConfig
             });
 
-            // init compact system layout ---------------------------------------------------------------------
+            // init grid snap ---------------------------------------------------------------------------------
             Util.triggerMenuAction(mapElement, 'MapOption', {
-                option: 'mapCompact',
+                option: 'mapSnapToGrid',
                 toggle: false
             });
 
@@ -1455,15 +1491,21 @@ define([
                 toggle: false
             });
 
-            // init grid snap ---------------------------------------------------------------------------------
+            // init compact system layout ---------------------------------------------------------------------
             Util.triggerMenuAction(mapElement, 'MapOption', {
-                option: 'mapSnapToGrid',
+                option: 'systemRegion',
+                toggle: false
+            });
+
+            // init compact system layout ---------------------------------------------------------------------
+            Util.triggerMenuAction(mapElement, 'MapOption', {
+                option: 'systemCompact',
                 toggle: false
             });
 
             // init endpoint overlay --------------------------------------------------------------------------
             Util.triggerMenuAction(mapElement, 'MapOption', {
-                option: 'mapSignatureOverlays',
+                option: 'connectionSignatureOverlays',
                 toggle: false,
                 skipOnEnable: true,     // skip callback -> Otherwise it would run 2 times on map create
                 skipOnDisable: true     // skip callback -> Otherwise it would run 2 times on map create
@@ -2200,6 +2242,8 @@ define([
         getConnectionData: getConnectionData,
         getSystemTypeInfo: getSystemTypeInfo,
         getEffectInfoForSystem: getEffectInfoForSystem,
+        getSystemSecurityForDisplay: getSystemSecurityForDisplay,
+        getSystemSecurityForClass: getSystemSecurityForClass,
         markAsChanged: markAsChanged,
         hasChanged: hasChanged,
         toggleSystemsSelect: toggleSystemsSelect,
