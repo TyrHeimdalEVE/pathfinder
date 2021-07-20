@@ -41,11 +41,11 @@ class CountConnections implements SystemTagInterface
         $countWhConnections = count($whConnections);
         if($sourceSystem->locked){
             if($sourceSystem->Locked && $targetClass == "C5" && !in_array(1, $tags)){
-                systemTag         = 1;
+                $systemTag         = 1;
                 return $systemTag;
             }
             if($sourceSystem->Locked && $targetClass == "0.0" && !in_array("SNS", $tags)){
-                systemTag         = "SNS";
+                $systemTag         = "SNS";
                 return $systemTag;
             }
             else {
