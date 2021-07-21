@@ -18,10 +18,10 @@ define(() => {
                 spacingX: 20,                           // spacing x between elements
                 spacingY: 10,                           // spacing y between elements
                 loops: 2,                               // max loops around "center" for search
-                grid: false,                            // set to [20, 20] to force grid snapping
+                grid: [20, 20],                            // set to [20, 20] to force grid snapping
                 newElementWidth: 100,                   // width for new element
                 newElementHeight: 22,                   // height for new element
-                mirrorSearch: false,                    // if true coordinates are "mirrored" for an "alternating" search
+                mirrorSearch: true,                    // if true coordinates are "mirrored" for an "alternating" search
                 debug: false,                           // render debug elements
                 debugOk: false,                         // if true, only not overlapped dimensions are rendered for debug
                 debugElementClass: 'pf-system-debug'    // class for debug elements
