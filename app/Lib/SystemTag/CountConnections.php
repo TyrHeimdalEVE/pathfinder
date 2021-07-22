@@ -18,7 +18,7 @@ class CountConnections implements SystemTagInterface
      * @throws \Exception
      */
     static function generateFor(SystemModel $targetSystem, SystemModel $sourceSystem, MapModel $map) : ?string
-    {                       
+    {
         $whConnections = array_filter($sourceSystem->getConnections(), function (ConnectionModel $connection) {
             return $connection->isWormhole();
         });
@@ -27,8 +27,11 @@ class CountConnections implements SystemTagInterface
             $countWhConnections++;
         }
         $parentTag          = $sourceSystem->tag;
-        $systemTag          = "$parentTag$countWhConnections";  
-                
+        if($parentTag === '0'){
+            $systemTag          = "$countWhConnections";
+        } else {
+            $systemTag          = "$parentTag$countWhConnections";
+        }
         return max($systemTag, 1);
     }
 }
