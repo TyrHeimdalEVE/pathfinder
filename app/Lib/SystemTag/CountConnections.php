@@ -42,19 +42,6 @@ class CountConnections implements SystemTagInterface
         // If HOME HOLE
         if($parentTag === '0'){
 
-            // Iterate over all systems on map -> $system
-            foreach ($systems as $system) {
-                if($system->security === $targetClass){
-                    if(preg_match('/^(1)|(1\.[a-zA-Z])$', $system->tag)){
-                        $countStaticC5++;
-                        $alphaStaticC5 = num2alpha($countStaticC5);
-                    } elseif(preg_match('/^(SNS)|(SNS\.[a-zA-Z])$', $system->tag)){
-                        $countStaticNS++;
-                        $alphaStaticNS = num2alpha($countStaticNS);
-                    }
-                }
-            }
-
             // I'm lazy, ok?
             function num2alpha($n) {
                 $r = '';
@@ -63,6 +50,19 @@ class CountConnections implements SystemTagInterface
                 $n -= pow(26, $i);
                 }
                 return $r;
+            }
+
+            // Iterate over all systems on map -> $system
+            foreach ($systems as $system) {
+                if($system->security === $targetClass){
+                    if(preg_match('/^(1)|(1\.[a-zA-Z])$/', $system->tag)){
+                        $countStaticC5++;
+                        $alphaStaticC5 = num2alpha($countStaticC5);
+                    } elseif(preg_match('/^(SNS)|(SNS\.[a-zA-Z])$/', $system->tag)){
+                        $countStaticNS++;
+                        $alphaStaticNS = num2alpha($countStaticNS);
+                    }
+                }
             }
 
             // If target WH is a C5
