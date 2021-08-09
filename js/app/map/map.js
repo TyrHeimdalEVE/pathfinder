@@ -452,9 +452,6 @@ define([
                     }),
                     $('<span>', {
                         class: [config.systemHeadTagClass, secClass].join(' ')
-                    }).attr('data-value', " "),
-                    $('<span>', {
-                        class: [config.systemHeadTagClass, secClass].join(' ')
                     }).attr('data-value', data.tag),
                     // System name is editable
                     $('<span>', {
