@@ -452,9 +452,6 @@ define([
                     }),
                     $('<span>', {
                         class: [config.systemHeadTagClass, secClass].join(' ')
-                    }).attr('data-value', " "),
-                    $('<span>', {
-                        class: [config.systemHeadTagClass, secClass].join(' ')
                     }).attr('data-value', data.tag),
                     // System name is editable
                     $('<span>', {
@@ -2232,10 +2229,10 @@ define([
                 ],
                 Container: null,                                                        // will be set as soon as container is connected to DOM
                 PaintStyle: {
-                    strokeWidth: 4,                                                     // connection width (inner)
+                    strokeWidth: 2,                                                     // connection width (inner)
                     stroke: '#3c3f41',                                                  // connection color (inner)
-                    outlineWidth: 2,                                                    // connection width (outer)
-                    outlineStroke: '#63676a',                                           // connection color (outer)
+                    outlineWidth: 1,                                                    // connection width (outer)
+                    outlineStroke: '#ffffff',                                           // connection color (outer)
                     dashstyle: '0',                                                     // connection dashstyle (default) -> is used after connectionType got removed that has dashstyle specified
                     'stroke-linecap': 'round'                                           // connection shape
                 },

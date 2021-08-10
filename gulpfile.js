@@ -16,7 +16,7 @@ let gzip                = require('gulp-gzip');
 let brotli              = require('gulp-brotli');
 let uglifyjs            = require('uglify-es');
 let composer            = require('gulp-uglify/composer');
-let sass                = require('gulp-sass');
+let sass                = require('gulp-sass')(require('sass')); //require('gulp-sass');
 let autoprefixer        = require('gulp-autoprefixer');
 let cleanCSS            = require('gulp-clean-css');
 let imageResize         = require('gulp-image-resize');
@@ -43,7 +43,7 @@ let del                 = require('promised-del');
 
 let minify = composer(uglifyjs, console);
 
-sass.compiler           = require('node-sass');
+//sass.compiler           = require('gulp-sass')(require('sass')); //require('node-sass');
 
 // == Settings ========================================================================================================
 
