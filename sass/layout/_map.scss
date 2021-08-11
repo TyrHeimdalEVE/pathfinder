@@ -300,18 +300,18 @@ $mapBubbleWidth:        30px;
     min-width: 60px;
     height: auto;
     overflow: hidden; // hide bg on round corners -_-
-    background-color: $gray-dark;
+    background: radial-gradient(black, #343434);
     font-family: $font-family-bold;
     z-index: 100;
     will-change: top, left, opacity, transform;
 
     //opacity: 0; // trigger by js
     border: {
-      width: 2px;
-      style: solid;
-      color: $gray-light;
+      width: 1px;
+      style: dotted;
+      color: $white;
     }
-    border-radius: 5px;
+    border-radius: 8px;
 
     // change border color with transition
     @include transition( border-color 0.2s ease-out, box-shadow 0.12s ease-out, opacity 0.12s ease-out);
@@ -335,7 +335,7 @@ $mapBubbleWidth:        30px;
         border: none;
         display: inline-block;
         min-width: 50px;
-        color: $gray-lighter;
+        color: $yellow-lighter;
         margin-right: 2px;
         letter-spacing: 0.03em;
         -webkit-font-smoothing: antialiased;
@@ -536,6 +536,9 @@ $mapBubbleWidth:        30px;
     }
     .pf-system-head-tag{
       cursor: default !important;
+      color: $white;
+      margin-left: 2px;
+      //margin-right: 2px;
     }
 
     .pf-system-body{
