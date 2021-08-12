@@ -1,3 +1,4 @@
+
 $mapOverlayTop:         8px;
 $mapOverlayRight:       25px;
 $mapOverlayBottom:      25px;
@@ -308,7 +309,7 @@ $mapBubbleWidth:        30px;
     //opacity: 0; // trigger by js
     border: {
       width: 1px;
-      style: dotted;
+      style: double;
       color: $white;
     }
     border-radius: 8px;
@@ -515,16 +516,16 @@ $mapBubbleWidth:        30px;
 
   // active system
   .pf-system-active:not(.pf-map-endpoint-source):not(.pf-map-endpoint-target){
-    @include box-shadow($yellow-lighter 0px 0px 8px 0px);
+    @include box-shadow($white 0px 0px 8px 0px);
   }
 
 
   // selected system
   .pf-system-selected:not(.pf-map-endpoint-source):not(.pf-map-endpoint-target){
-    @include box-shadow($red-darker 0px 0px 8px 0px);
-    background-color: $red-darker;
+    @include box-shadow($red 0px 0px 8px 0px);
+    background-color: $red;
     .pf-system-head, .pf-system-body{
-      background-color: $red-darker;
+      background: radial-gradient(#550101, #000);
     }
   }
 
@@ -580,6 +581,7 @@ $mapBubbleWidth:        30px;
     svg {
       circle{
         @include transition(stroke 0.18s ease-out, fill 0.18s ease-out);
+        stroke: $white;
       }
 
       *{
@@ -664,6 +666,10 @@ $mapBubbleWidth:        30px;
     path {
       shape-rendering: geometricPrecision;        // maybe better render quality ?!
       @include transition(stroke 0.18s ease-out);
+    }
+
+    .jtk-connector-outline{
+      stroke: #bfbebe;
     }
 
     &.jtk-hover{

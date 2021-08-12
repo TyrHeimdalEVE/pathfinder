@@ -232,7 +232,8 @@ $mapModuleGridRowMinHeight: 38px;
       max-height: $mapAreaMaxHeight;
       overflow: hidden; // required for resizing to work with pos: absolute "overlay" elements
       padding: 5px;
-      background: rgba($gray-darker, 0.93);
+      //background: rgba($gray-lighter, 0.93);
+      background: rgb(25, 25, 25);
       box-shadow: inset -3px 3px 10px 0 rgba($black, 0.3);
       will-change: width, height;
       border-top-left-radius: 0;
