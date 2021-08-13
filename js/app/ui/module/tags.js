@@ -48,9 +48,9 @@ define([
          */
         initTagModule(){
             super.init();
-        }   
+        }
         
-        getTagList(mapId){                
+        getTagList(mapId){
             let currentTags = [];
             let securityClasses = ['H', 'L', '0.0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6'];
 
@@ -61,10 +61,10 @@ define([
             }
 
             currentTags.forEach(function(item, index, arr){
-                arr[index] = [securityClasses[index]];            
+                arr[index] = [securityClasses[index]];
                 item.forEach(tag => {
                    arr[index].push(tag)
-                })  
+                })
               })
             return currentTags;
         }
@@ -74,7 +74,7 @@ define([
                 className: this._config.tagsTable,
                 id: 'table-id',
                 style: "width: 90%; text-align: center; margin-left: auto; margin-right: auto;"
-            });            
+            });
             
             for (var i = 0; i < tagsArr[0].length; i++) {
                 let tagsRow = tagsTable.insertRow();
@@ -83,10 +83,10 @@ define([
                         className: [this._config.systemSec, Util.getSecurityClassForSystem(tags[0])].join(' '),
                         style: "width: 10%; padding: 5px;"
                     });
-                    let tagsText = document.createTextNode(i == 0 ? MapUtil.getSystemSecurityForDisplay(tags[i]).toLowerCase() : tags[i]); 
+                    let tagsText = document.createTextNode(i == 0 ? MapUtil.getSystemSecurityForDisplay(tags[i]).toLowerCase() : tags[i]);
                     tagsCell.appendChild(tagsText);
-                });                
-            }            
+                });
+            }
             this._bodyEl.append(tagsTable);
         }
 

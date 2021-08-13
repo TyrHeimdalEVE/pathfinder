@@ -155,8 +155,8 @@ define([
                         markup += '<div class="col-xs-4 text-right">' + suffix + '</div>';
                         break;
                     case 'system':
-                        markup += '<div class="col-xs-10">' + parts[0] + '</div>';
-                        markup += '<div class="col-xs-2 ' + securityClass + '">' + parts[1] + '</div>';
+                        markup += '<div class="col-xs-6">' + parts[0] + '</div>';
+                        markup += '<div class="col-xs-6 ' + securityClass + '">' + parts[1] + '</div>';
                         break;
                 }
             }else{

@@ -2805,9 +2805,11 @@ define([
                 let text = 'UNKNOWN';
 
                 if(type === 'source'){
-                    text = connectionData.sourceAlias + ' - ' + MapUtil.getSystemSecurityForDisplay(systemData.security).toLowerCase() + systemData.tag;
+                    //text = connectionData.sourceAlias + ' - ' + MapUtil.getSystemSecurityForDisplay(systemData.security).toLowerCase() + systemData.tag;
+                    text = connectionData.sourceAlias + ' - ' + MapUtil.getSystemSecurityForDisplay(systemData.security).toLowerCase() + '|' + systemData.tag;
                 }else if(type === 'target'){
-                    text = connectionData.targetAlias + ' - ' + MapUtil.getSystemSecurityForDisplay(systemData.security).toLowerCase() + systemData.tag;
+                    //text = connectionData.targetAlias + ' - ' + MapUtil.getSystemSecurityForDisplay(systemData.security).toLowerCase() + systemData.tag;
+                    text = connectionData.targetAlias + ' - ' + MapUtil.getSystemSecurityForDisplay(systemData.security).toLowerCase() + '|' + systemData.tag;
                 }
 
                 return {
