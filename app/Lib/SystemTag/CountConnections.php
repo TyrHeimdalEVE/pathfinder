@@ -58,7 +58,7 @@ class CountConnections implements SystemTagInterface
                     if(preg_match('/^(1)|(1\.[a-zA-Z])$/', $system->tag)){
                         $countStaticC5++;
                         $alphaStaticC5 = num2alpha($countStaticC5);
-                    } elseif(preg_match('/^(sns)|(sns\.[a-zA-Z])$/', $system->tag)){
+                    } elseif(preg_match('/^(s)|(s\.[a-zA-Z])$/', $system->tag)){
                         $countStaticNS++;
                         $alphaStaticNS = num2alpha($countStaticNS);
                     }
@@ -78,7 +78,7 @@ class CountConnections implements SystemTagInterface
                 $systemTag          = 's';
             } elseif ($targetClass === '0.0' && $countStaticNS){
                 // Give tag -> s.a-z
-                $systemTag          = "SNS.$alphaStaticNS";
+                $systemTag          = "s.$alphaStaticNS";
             } else {
                 $countWhConnections++;
                 $systemTag          = "$countWhConnections";
