@@ -47,12 +47,6 @@
     "clue/ndjson-react": "1.1.*",
     "tyrheimdaleve/pathfinder_esi": "2.1.1"
   },
-  "repositories": {
-    "GitHub-TyrHeimdalEVE": {
-      "type": "vcs",
-      "url":  "https://github.com/TyrHeimdalEVE/pathfinder_esi.git"
-    }
-  },
   "suggest": {
     "ext-redis": "Redis can be used as cache backend."
   }
