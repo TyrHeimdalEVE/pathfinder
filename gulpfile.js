@@ -42,7 +42,7 @@ let del                 = require('promised-del');
 
 let minify = composer(uglifyjs, console);
 
-//sass.compiler           = require('gulp-sass')(require('sass')); //require('node-sass');
+sass.compiler           = require('node-sass');
 
 // == Settings ========================================================================================================
 
