@@ -199,7 +199,7 @@ define([
     });
 
     /**
-     * request all map access data (tokens) -> required wor WebSocket subscription
+     * request all map access data (tokens) -> required for WebSocket subscription
      * -> initData() needs to be resolved first!
      * @param mapModule
      * @param accessData
